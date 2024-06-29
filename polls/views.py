@@ -52,7 +52,11 @@ With get_object_or_404:
         return render(request, "polls/detail.html", {"question": question})
 '''
 class DetailView(generic.DetailView):
-    model = Question
+    def get_queryset(self):
+        """
+        Excludes any questions that aren't published yet.
+        """
+        return Question.objects.filter(pub_date__lte=timezone.now())
 
 
 class ResultsView(generic.DetailView):
